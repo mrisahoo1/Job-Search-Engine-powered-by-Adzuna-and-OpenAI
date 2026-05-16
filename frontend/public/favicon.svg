@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Job Search Curation Agent">
+  <rect width="64" height="64" rx="14" fill="#101820" />
+  <path d="M16 22h32v27H16z" fill="#f4f1e8" />
+  <path d="M23 22v-5h18v5" fill="none" stroke="#f4f1e8" stroke-width="4" stroke-linecap="round" />
+  <path d="M22 33h20M22 41h14" stroke="#e35d35" stroke-width="4" stroke-linecap="round" />
+</svg>

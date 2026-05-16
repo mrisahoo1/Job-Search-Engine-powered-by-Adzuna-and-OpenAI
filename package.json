@@ -1,0 +1,31 @@
+{
+  "name": "job-search-curation-agent",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "engines": {
+    "node": "24.x"
+  },
+  "scripts": {
+    "dev": "vite --config frontend/vite.config.ts --host 127.0.0.1",
+    "build": "tsc -b && vite build --config frontend/vite.config.ts",
+    "test": "python -m unittest discover -s backend/tests -p \"test_*.py\" && vitest run --config vitest.config.ts",
+    "test:backend": "python -m unittest discover -s backend/tests -p \"test_*.py\"",
+    "test:frontend": "vitest run --config vitest.config.ts",
+    "test:watch": "vitest --config vitest.config.ts"
+  },
+  "dependencies": {
+    "@vitejs/plugin-react": "latest",
+    "vite": "latest",
+    "typescript": "latest",
+    "react": "latest",
+    "react-dom": "latest",
+    "lucide-react": "latest"
+  },
+  "devDependencies": {
+    "@types/node": "latest",
+    "@types/react": "latest",
+    "@types/react-dom": "latest",
+    "vitest": "latest"
+  }
+}
