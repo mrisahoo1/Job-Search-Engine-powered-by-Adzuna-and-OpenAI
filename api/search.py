@@ -51,8 +51,7 @@ def _preferences_from_payload(payload: dict) -> SearchPreference:
         countries=[str(item) for item in payload.get('countries') or []],
         remote_only=bool(payload.get('remoteOnly') or payload.get('remote_only') or False),
         visa_sponsorship=str(payload.get('visaSponsorship') or payload.get('visa_sponsorship') or 'preferred'),
-        sources=[str(item) for item in payload.get('sources') or ['arbeitnow', 'remotive', 'official', 'seeded']],
+        sources=[str(item) for item in payload.get('sources') or ['deep', 'official']],
         official_companies=[str(item) for item in payload.get('officialCompanies') or payload.get('official_companies') or ['bmw', 'example-greenhouse']],
         search_mode=str(payload.get('searchMode') or payload.get('search_mode') or 'live'),
     )
-

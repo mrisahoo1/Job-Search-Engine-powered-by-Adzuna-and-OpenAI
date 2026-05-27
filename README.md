@@ -5,7 +5,7 @@ A full-stack job search and curation workbench for finding relevant roles, ranki
 ## Live Deployment
 
 - Production: [job-search-curation-agent.vercel.app](https://job-search-curation-agent.vercel.app)
-- Latest deployment: [job-search-curation-agent-nrhqtud66-chatgptbdsm-2985s-projects.vercel.app](https://job-search-curation-agent-nrhqtud66-chatgptbdsm-2985s-projects.vercel.app)
+- Latest deployment: [job-search-curation-agent-h1qrvuv7o-chatgptbdsm-2985s-projects.vercel.app](https://job-search-curation-agent-h1qrvuv7o-chatgptbdsm-2985s-projects.vercel.app)
 
 ## What the Application Does
 
@@ -26,8 +26,9 @@ The goal is not just to list jobs. It gives the candidate a structured workspace
 
 - **Resume input and parsing**: paste resume text directly or upload TXT, DOCX, or best-effort PDF files through the resume parser.
 - **Live search controls**: search by role, region, countries, source selection, remote-only preference, and visa sponsorship preference.
+- **Deep web crawl source**: uses public job feeds plus Tavily-powered web discovery to find role-specific public job pages, ATS links, remote job boards, and public listing pages.
 - **Adzuna search mode**: query Adzuna with configured credentials and fetch paginated results with total-count status messages.
-- **Multiple source types**: supports Arbeitnow, Remotive, official company career links, Greenhouse-style boards, seeded examples, and Adzuna.
+- **Multiple source types**: supports Deep web crawl, Arbeitnow, Remotive, RemoteOK, official company career links, Greenhouse-style boards, seeded examples, Tavily discovery, and Adzuna.
 - **Fit evaluation**: ranks jobs using resume signals, matched skills, gaps, seniority hints, location fit, remote fit, and visa sponsorship signals.
 - **Explainable recommendations**: each selected job shows fit score, confidence, strengths, and risks before the user takes action.
 - **Tailored resume drafts**: creates a role-specific resume draft and change summary for the selected job while preserving truthful source facts.
@@ -39,15 +40,16 @@ The goal is not just to list jobs. It gives the candidate a structured workspace
 
 ### Live Search
 
-Live Search combines public or compliant sources and source-specific adapters:
+Live Search now defaults to **Deep web crawl** plus selected official sites. Deep web crawl combines public job feeds and search-based discovery:
 
-- Arbeitnow for Europe-focused job board data.
-- Remotive for remote roles.
+- RemoteOK, Remotive, and Arbeitnow public feeds for no-key baseline coverage.
+- Tavily Search, when `TAVILY_API_KEY` is configured, for broader public web discovery across job boards, ATS pages, official career pages, and public listing pages.
+- Optional Brave Search and Google Programmable Search environment hooks are documented for future backup discovery.
 - Official company career links for selected companies.
 - Greenhouse-style board integrations where a public board API exists.
-- Seeded examples so the app still demonstrates the workflow when public providers are unavailable.
+- Seeded examples only when explicitly enabled.
 
-Live Search deduplicates jobs by semantic job identity and apply URL, then filters by the active region, remote preference, and visa preference.
+Live Search deduplicates jobs by semantic job identity and apply URL, then filters by the active role query, region, remote preference, and visa preference. Search statuses explain which sources returned feed jobs, Tavily links, snippet-only links, or degraded results.
 
 ### Adzuna Search
 
@@ -102,11 +104,18 @@ ADZUNA_APP_ID=
 ADZUNA_APP_KEY=
 ADZUNA_RESULTS_PER_PAGE=50
 ADZUNA_MAX_RESULTS=500
+TAVILY_API_KEY=
+BRAVE_SEARCH_API_KEY=
+GOOGLE_API_KEY=
+GOOGLE_CSE_ID=
+DEEP_SEARCH_MAX_RESULTS=60
+DEEP_CRAWL_MAX_PAGES=12
+DEEP_SEARCH_QUERY_COUNT=6
 OPENAI_API_KEY=
 OPENAI_MODEL=gpt-4o-mini
 ```
 
-`ADZUNA_APP_ID` and `ADZUNA_APP_KEY` are required for Adzuna Search. `OPENAI_API_KEY` is optional and enables OpenAI-backed personalization.
+`ADZUNA_APP_ID` and `ADZUNA_APP_KEY` are required for Adzuna Search. `TAVILY_API_KEY` is optional but strongly recommended for broad Deep web crawl discovery. `OPENAI_API_KEY` is optional and enables OpenAI-backed personalization.
 
 ## Local Development
 
@@ -138,9 +147,10 @@ npm run build
 
 Current validation used before publishing this project:
 
-- Backend unit tests: 36 tests passing.
+- Backend unit tests: 41 tests passing.
 - Frontend Vitest tests: 2 test files passing.
-- Production build was previously validated during the implementation run.
+- Production build validated with `npm run build`.
+- Tavily-enabled smoke test validated different result sets for `generative ai engineer`, `data engineer`, and `backend engineer`.
 
 There is currently no `npm run lint` script in `package.json`.
 
@@ -165,7 +175,7 @@ This app is designed as a candidate-side assistant. It does not:
 - Submit job applications.
 - Send outreach messages.
 - Bypass login, CAPTCHA, payment, protected pages, or legal attestations.
-- Scrape closed platforms that do not expose a compliant public or authorized integration path.
+- Treat protected platforms as snippet/search-result links when full public page extraction is not available.
 - Invent resume experience that is not supported by the provided resume or user input.
 
 It prepares drafts, explanations, and apply links so the user can review and take the final action manually.

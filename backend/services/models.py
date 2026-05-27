@@ -29,7 +29,7 @@ class SearchPreference:
     countries: list[str] = field(default_factory=lambda: ['Germany', 'Netherlands', 'Ireland', 'France', 'Spain', 'United Kingdom'])
     remote_only: bool = False
     visa_sponsorship: VisaPreference = 'preferred'
-    sources: list[str] = field(default_factory=lambda: ['arbeitnow', 'remotive', 'official', 'seeded'])
+    sources: list[str] = field(default_factory=lambda: ['deep', 'official'])
     official_companies: list[str] = field(default_factory=lambda: ['bmw', 'example-greenhouse'])
     search_mode: str = 'live'
 
@@ -121,5 +121,3 @@ def to_jsonable(value):
     if isinstance(value, dict):
         return {to_camel(str(key)): to_jsonable(item) for key, item in value.items()}
     return value
-
-

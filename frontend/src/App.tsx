@@ -20,7 +20,7 @@ const defaultPreferences: SearchPreference = {
   countries: ['Germany', 'Netherlands', 'Ireland', 'France', 'Spain', 'United Kingdom'],
   remoteOnly: false,
   visaSponsorship: 'preferred',
-  sources: ['arbeitnow', 'remotive', 'official', 'seeded'],
+  sources: ['deep', 'official'],
   officialCompanies: ['bmw', 'example-greenhouse'],
   searchMode: 'live',
 };
