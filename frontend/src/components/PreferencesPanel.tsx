@@ -8,7 +8,13 @@ const regions: Array<{ id: RegionId; label: string; countries: string[] }> = [
   { id: 'australia', label: 'Australia', countries: ['Australia'] },
   { id: 'remote_global', label: 'Remote / Global', countries: [] },
 ];
-const sourceOptions = ['arbeitnow', 'remotive', 'official', 'seeded'];
+const sourceOptions = [
+  { id: 'deep', label: 'Deep web crawl' },
+  { id: 'arbeitnow', label: 'Arbeitnow feed' },
+  { id: 'remotive', label: 'Remotive feed' },
+  { id: 'official', label: 'Official sites' },
+  { id: 'seeded', label: 'Seeded examples' },
+];
 const companyOptions = [
   { id: 'bmw', label: 'BMW careers' },
   { id: 'stripe', label: 'Stripe careers' },
@@ -29,7 +35,7 @@ export function PreferencesPanel({ preferences, onChange, onSearch, loading }: P
     onChange({ ...preferences, officialCompanies: active ? Array.from(new Set([...preferences.officialCompanies, company])) : preferences.officialCompanies.filter((item) => item !== company) });
   }
   function setMode(mode: SearchMode) {
-    onChange({ ...preferences, searchMode: mode, sources: mode === 'adzuna' ? ['adzuna'] : ['arbeitnow', 'remotive', 'official', 'seeded'] });
+    onChange({ ...preferences, searchMode: mode, sources: mode === 'adzuna' ? ['adzuna'] : ['deep', 'official'] });
   }
 
   return (
@@ -48,7 +54,7 @@ export function PreferencesPanel({ preferences, onChange, onSearch, loading }: P
       <div className="region-note">Active countries: {preferences.countries.length ? preferences.countries.join(', ') : 'Remote/global source coverage'}</div>
 
       {preferences.searchMode === 'live' && (
-        <fieldset className="country-grid"><legend>Live sources</legend>{sourceOptions.map((source) => <label key={source}><input type="checkbox" checked={preferences.sources.includes(source)} onChange={(event) => toggleSource(source, event.target.checked)} />{source}</label>)}</fieldset>
+        <fieldset className="country-grid"><legend>Live sources</legend>{sourceOptions.map((source) => <label key={source.id}><input type="checkbox" checked={preferences.sources.includes(source.id)} onChange={(event) => toggleSource(source.id, event.target.checked)} />{source.label}</label>)}</fieldset>
       )}
       {preferences.searchMode === 'live' && preferences.sources.includes('official') && (
         <fieldset className="country-grid"><legend>Official sites</legend>{companyOptions.map((company) => <label key={company.id}><input type="checkbox" checked={preferences.officialCompanies.includes(company.id)} onChange={(event) => toggleCompany(company.id, event.target.checked)} />{company.label}</label>)}</fieldset>

@@ -42,6 +42,8 @@ def _source_enabled(source: SourceFetcher, preferences: SearchPreference) -> boo
     name = getattr(source, '__name__', '')
     if not preferences.sources:
         return True
+    if name.startswith('fetch_deep_live'):
+        return 'deep' in preferences.sources
     if name.startswith('fetch_arbeitnow'):
         return 'arbeitnow' in preferences.sources
     if name.startswith('fetch_remotive'):
@@ -83,10 +85,24 @@ def _filter_jobs(jobs: list[JobPosting], preferences: SearchPreference) -> list[
 
 
 def _query_relevance(job: JobPosting, preferences: SearchPreference) -> int:
-    terms = [term.lower() for term in preferences.query.split() if len(term) > 2]
-    tags = ' '.join(job.tags)
-    haystack = f'{job.title} {job.description} {tags}'.lower()
-    return sum(1 for term in terms if term in haystack)
+    stop_words = {'and', 'the', 'for', 'with', 'job', 'jobs', 'role', 'roles', 'remote', 'hybrid', 'onsite', 'senior', 'lead', 'staff', 'engineer', 'developer', 'manager', 'software', 'full', 'stack'}
+    raw_terms = [term.lower() for term in re.findall(r'[a-z0-9+#.]+', preferences.query) if len(term) > 1]
+    terms = [term for term in raw_terms if term not in stop_words] or raw_terms[:3]
+    title = job.title.lower()
+    tags = ' '.join(job.tags).lower()
+    description = job.description.lower()
+    score = 0
+    for term in terms:
+        if term in title:
+            score += 5
+        if term in tags:
+            score += 3
+        if term in description:
+            score += 1
+    phrase = preferences.query.lower().strip()
+    if phrase and phrase in title:
+        score += 8
+    return score
 
 
 def _normalize_key(value: str) -> str:
